@@ -4,14 +4,14 @@ from ffmpeg import FFmpeg
 async def apply_ffmpeg_audio_filter(input_file, output_file, codec, map, filter):
     if codec == map == filter == None:
         ffmpeg = (
-            FFmpeg()
+            FFmpeg("/bin/env ffmpeg")
             .option("y")
             .input(input_file)
             .output(output_file)
         )
     else:
         ffmpeg = (
-            FFmpeg()
+            FFmpeg("/bin/env ffmpeg")
             .option("y")
             .input(input_file)
             .output(output_file,
@@ -30,7 +30,7 @@ async def apply_ffmpeg_audio_filter(input_file, output_file, codec, map, filter)
 
 def get_duration(file):
     return float(
-        FFmpeg()
+        FFmpeg("/bin/env ffprobe")
         .input(
             file,
             show_entries="format=duration",
