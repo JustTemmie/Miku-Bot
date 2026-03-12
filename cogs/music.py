@@ -209,6 +209,10 @@ class MusicPlayer(commands.Cog):
             self.data[guild_id]["player"] = await YtDlpSource.get_player(self, guild_id, self.data[guild_id]["song"])
             
             if ctx.voice_client:
+                discord.opus.load_opus()
+                if not discord.opus.is_loaded():
+                    raise RuntimeError('Opus failed to load')
+
                 ctx.voice_client.play(
                     self.data[guild_id]["player"],
                     after=lambda e: asyncio.run_coroutine_threadsafe(
