@@ -55,7 +55,7 @@ remove_colour = re.compile(r'''
 ''', re.VERBOSE)
 
 def get_opus_path() -> str:
-    return os.getenv("LIBOPUS_PATH", "/usr/bin/libopus.so")
+    return os.getenv("LIBOPUS_PATH", None)
 
 class TrackedFFmpegPCMAudio(discord.FFmpegPCMAudio):
     def __init__(self, player, guild_id, *args, **kwargs):
