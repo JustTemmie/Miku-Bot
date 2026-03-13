@@ -6,7 +6,6 @@ if __name__ == "__main__":
     import sys
     sys.path.append(".")
 
-from objects import lang
 
 class BOILERPLATE(commands.Cog):
     def __init__(self, bot: commands.Bot):

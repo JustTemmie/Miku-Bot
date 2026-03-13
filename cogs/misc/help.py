@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 
 import modules.helpers as helpers
-from objects import lang
 
 class Help(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -26,13 +25,13 @@ class Help(commands.Cog):
         }
 
     def get_page_name(self, page_ID: str, userID: int):
-        return lang.tr(f"help_command_page_{page_ID}", userID = userID)
+        return self.bot.lang.tr(f"help_command_page_{page_ID}", userID = userID)
     
     def get_page_emoji(self, page_ID):
         return self.page_emojis.get(page_ID, self.page_emojis[None])
 
     def get_page_description(self, pageID: str, userID: int):
-        return lang.tr(f"help_command_page_description_{pageID}", userID=userID)
+        return self.bot.lang.tr(f"help_command_page_description_{pageID}", userID=userID)
     
     def set_page_content(self, embed: discord.Embed, page_number: int, command_pages, userID: int) -> discord.Embed:
         page: dict[list[dict[list]]] = command_pages[page_number]
@@ -68,20 +67,20 @@ class Help(commands.Cog):
         command_data = self.bot.get_command(command)
         
         if not command_data:
-            await lang.tr_send(ctx, "help_command_missing_command", command=command)
+            await self.bot.lang.tr_send(ctx, "help_command_missing_command", command=command)
             return
         
         if command_data.hidden:
             embed = helpers.create_embed(ctx)
-            embed.title = lang.tr("help_command_hidden_command_title", userID=ctx.author.id)
-            embed.description = lang.tr("help_command_hidden_command_description", userID=ctx.author.id)
+            embed.title = self.bot.lang.tr("help_command_hidden_command_title", userID=ctx.author.id)
+            embed.description = self.bot.lang.tr("help_command_hidden_command_description", userID=ctx.author.id)
             await ctx.send(embed=embed)
             return
 
         if not await helpers.can_run(ctx, command_data):
             embed = helpers.create_embed(ctx)
             embed.title = command_data.name
-            embed.description = lang.tr("help_command_invalid_permissions", userID=ctx.author.id)
+            embed.description = self.bot.lang.tr("help_command_invalid_permissions", userID=ctx.author.id)
             await ctx.send(embed=embed)
             return
         
@@ -89,24 +88,24 @@ class Help(commands.Cog):
         embed.title = command_data.name
         
         if command_data.brief:
-            embed.description = lang.tr(command_data.brief, userID=ctx.author.id)
+            embed.description = self.bot.lang.tr(command_data.brief, userID=ctx.author.id)
         
         if command_data.description:
             embed.add_field(
-                name=lang.tr("help_command_command_description", userID=ctx.author.id),
-                value=lang.tr(command_data.description, userID=ctx.author.id),
+                name=self.bot.lang.tr("help_command_command_description", userID=ctx.author.id),
+                value=self.bot.lang.tr(command_data.description, userID=ctx.author.id),
                 inline=False
             )
         
         if command_data.aliases:
             embed.add_field(
-                name=lang.tr("help_command_command_aliases", userID=ctx.author.id),
+                name=self.bot.lang.tr("help_command_command_aliases", userID=ctx.author.id),
                 value=", ".join(command_data.aliases),
                 inline=False
             )
             
         embed.add_field(
-            name=lang.tr("help_command_command_signature", userID=ctx.author.id),
+            name=self.bot.lang.tr("help_command_command_signature", userID=ctx.author.id),
             value=f"{ctx.prefix}{command_data.name} {command_data.signature}",
             inline=False
         )
@@ -114,7 +113,7 @@ class Help(commands.Cog):
         if command_data.cooldown:
             value = self.bot.lang
             embed.add_field(
-                name=lang.tr(
+                name=self.bot.lang.tr(
                     "help_command_command_cooldown",
                     userID=ctx.author.id,
                     times=command_data.cooldown.rate,
@@ -218,7 +217,7 @@ class Help(commands.Cog):
         view = discord.ui.View()
         if len(page_options) > 1:
             select_page_list = discord.ui.Select(
-                placeholder=lang.tr("help_command_change_page_placeholder", userID=ctx.author.id),
+                placeholder=self.bot.lang.tr("help_command_change_page_placeholder", userID=ctx.author.id),
                 options=page_options
             )
             select_page_list.callback = set_page_callback

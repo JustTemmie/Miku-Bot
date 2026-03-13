@@ -1,13 +1,17 @@
-import discord
-from discord.ext import commands
-
 import logging
 import logging.handlers
 
-from datetime import datetime
 import asyncio
 import glob
 import os
+
+from datetime import datetime
+
+import discord
+from discord.ext import commands
+
+import modules.localAPIs.language as languageLib
+
 
 import config
 
@@ -62,12 +66,13 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-class Bot(commands.AutoShardedBot):
+class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):        
         self.ready = False
-        
+        self.lang = languageLib.LangageHandler()
+
         super().__init__(
-            shards=config.SHARDS,
+            # shards=config.SHARDS,
             command_prefix=(self.get_prefix),
             strip_after_prefix=True,
             case_insensitive=True,

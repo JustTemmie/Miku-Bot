@@ -4,7 +4,6 @@ from discord.ext import commands
 import json
 import os
 
-import modules.database.user as userDB
 import modules.generic_helpers as generic_helpers
 import settings
 
@@ -36,13 +35,13 @@ class LangageHandler:
         if userID is None and interaction:
             userID = interaction.user.id
         
-        if userID:
-            with userDB.Driver.SessionMaker() as db_session:
-                user_query = db_session.query(userDB.User)
-                user = user_query.where(userDB.User.id == userID).first()
+        # if userID:
+        #     with userDB.Driver.SessionMaker() as db_session:
+        #         user_query = db_session.query(userDB.User)
+        #         user = user_query.where(userDB.User.id == userID).first()
                 
-                if user:
-                    language = user.preferred_language
+        #         if user:
+        #             language = user.preferred_language
         
         if language is None and \
         interaction is not None and \

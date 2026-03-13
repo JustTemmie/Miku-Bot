@@ -13,8 +13,6 @@ if __name__ == "__main__":
     import sys
     sys.path.append(".")
 
-from objects import lang
-
 # user still needs to set the title, description, and fields
 def create_embed(ctx: commands.Context, user = None):
     if user == None:
@@ -23,7 +21,7 @@ def create_embed(ctx: commands.Context, user = None):
     embed = discord.Embed()
     embed.colour = user.colour if user.colour != discord.Colour.default() else discord.Colour.light_embed()
     embed.set_footer(
-        text=lang.tr("default_embed_footer", userID=ctx.author.id, author=ctx.author.display_name),
+        text=ctx.bot.lang.tr("default_embed_footer", userID=ctx.author.id, author=ctx.author.display_name),
         icon_url=ctx.author.display_avatar.url
     )
     return embed

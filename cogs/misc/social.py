@@ -3,7 +3,6 @@ from discord.ext import commands
 
 import modules.APIs.tenor as tenorLib
 import modules.helpers as helpers
-from objects import lang
 
 class Social(commands.Cog):
     def __init__(self, bot):
@@ -11,11 +10,11 @@ class Social(commands.Cog):
     
     def set_embed_content(self, embed, actionID, author, target):
         if target:
-            embed.title = lang.tr(f"social_{actionID}_target_title", userID=author.id, user=author.display_name, target=target.display_name)
-            embed.description = lang.tr(f"social_{actionID}_target_description", userID=author.id)
+            embed.title = self.bot.lang.tr(f"social_{actionID}_target_title", userID=author.id, user=author.display_name, target=target.display_name)
+            embed.description = self.bot.lang.tr(f"social_{actionID}_target_description", userID=author.id)
         else:
-            embed.title = lang.tr(f"social_{actionID}_self_title", userID=author.id, user=author.display_name)
-            embed.description = lang.tr(f"social_{actionID}_self_description", userID=author.id)
+            embed.title = self.bot.lang.tr(f"social_{actionID}_self_title", userID=author.id, user=author.display_name)
+            embed.description = self.bot.lang.tr(f"social_{actionID}_self_description", userID=author.id)
 
 
     @commands.command(

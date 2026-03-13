@@ -9,9 +9,6 @@ if __name__ == "__main__":
     import sys
     sys.path.append(".")
 
-import modules.database.user as userDB
-from objects import lang
-
 language_friendly_names = {
     "en-GB": "English",
     "en-US": "American English",
@@ -44,9 +41,9 @@ class Language(commands.Cog):
     )
     async def language_text_command(self, ctx: commands.Context, *, language: str = None):
         if language is None:
-            current_language_ID = lang.get_user_language(ctx.author.id)
+            current_language_ID = self.bot.lang.get_user_language(ctx.author.id)
             current_language = self.get_language_friendly_name(current_language_ID)
-            await lang.tr_send(
+            await self.bot.lang.tr_send(
                 ctx,
                 "language_setter_current_language",
                 userID=ctx.author.id,
@@ -55,7 +52,7 @@ class Language(commands.Cog):
             return
 
         if language not in valid_languages:
-            await lang.tr_send(
+            await self.bot.lang.tr_send(
                 ctx, "language_setter_invalid_language",
                 userID=ctx.author.id, new_language=language,
                 valid_languages=", ".join(f'{ID} ({display_name})' for ID, display_name in language_friendly_names.items())
@@ -66,11 +63,11 @@ class Language(commands.Cog):
         
                 
         if not success:
-            await lang.tr_send(ctx, "language_setter_database_error")
+            await self.bot.lang.tr_send(ctx, "language_setter_database_error")
             return
         
         new_language = f"{language} ({self.get_language_friendly_name(language)})"
-        await lang.tr_send(ctx, "language_setter_success", new_language=new_language)
+        await self.bot.lang.tr_send(ctx, "language_setter_success", new_language=new_language)
     
     
     async def language_autocomplete(self,
@@ -88,7 +85,7 @@ class Language(commands.Cog):
         if len(languages) > 25:
             languages = languages[:24]
             languages.append(app_commands.Choice(
-                name=lang.tr("slash_command_autocomplete_too_many_values", interaction=interaction),
+                name=self.bot.lang.tr("slash_command_autocomplete_too_many_values", interaction=interaction),
                 value=None
             ))
         
@@ -107,9 +104,9 @@ class Language(commands.Cog):
         language: str = None
     ):
         if language is None:
-            current_language_ID = lang.get_user_language(interaction.user.id)
+            current_language_ID = self.bot.lang.get_user_language(interaction.user.id)
             current_language = self.get_language_friendly_name(current_language_ID)
-            await interaction.response.send_message(lang.tr(
+            await interaction.response.send_message(self.bot.lang.tr(
                 "language_setter_current_language",
                 interaction=interaction, current_language=current_language
             ))
@@ -117,7 +114,7 @@ class Language(commands.Cog):
 
         if language not in valid_languages:
             await interaction.response.send_message(
-                lang.tr(
+                self.bot.lang.tr(
                     "language_setter_invalid_language",
                     interaction=interaction, new_language=language,
                     valid_languages=", ".join(f'{ID} ({display_name})' for ID, display_name in zip(valid_languages, language_friendly_names.values()))
@@ -128,11 +125,11 @@ class Language(commands.Cog):
         success = self.set_database_value(interaction.user.id, language)
         
         if not success:
-            await interaction.response.send_message(lang.tr("language_setter_database_error", interaction=interaction))
+            await interaction.response.send_message(self.bot.lang.tr("language_setter_database_error", interaction=interaction))
             return
         
         new_language = f"{language} ({self.get_language_friendly_name(language)})"
-        await interaction.response.send_message(lang.tr("language_setter_success", interaction=interaction, new_language=new_language))
+        await interaction.response.send_message(self.bot.lang.tr("language_setter_success", interaction=interaction, new_language=new_language))
     
     def set_database_value(self, userID, new_language) -> bool:
         with userDB.Driver.SessionMaker() as db_session:
